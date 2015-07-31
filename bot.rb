@@ -34,7 +34,7 @@ module Imouto
 							message,
 							regex.match(message)
 						)
-						reply_to = msg[:target].start_with?('#') ? msg[:target] : reply_to = msg[:nick]
+						reply_to = msg[:target].start_with?('#') ? msg[:target] : msg[:nick]
 						reply = Thread.new{matcher.call(m)}.value
 						queue_reply(reply_to, reply)
 						log("[-> Queue] #{reply_to}: #{reply}")
