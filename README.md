@@ -33,7 +33,7 @@ Using only the IRC-client functionality:
 		'password' => 'elpsycongroo'
 	}
 	
-	con = Imouto::Irc.new(Connection, User)
+	con = Imouto::Irc.new(config_connection, config_user)
 	con.start.read {|m|
 		reply_to = m[:target].start_with?('#') ? m[:target] : m[:nick]
 		con.privmsg(reply_to, m[:message])
@@ -58,7 +58,7 @@ Using Imouto with the included bot:
 		'password' => elpsycongroo
 	}
 	
-	con = Imouto::Irc.new(Connection, User)
+	con = Imouto::Irc.new(config_connection, config_user)
 	bot = Imouto::Bot.new(con)
 	bot.register_matcher(/foo/, lambda {|msg| 'foo'})
 	bot.start()
