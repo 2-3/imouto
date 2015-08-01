@@ -11,7 +11,7 @@ You can use only the IRC-client functionality and do whatever you like with the 
 - Rate Limiting: Most IRC-networks kick you if you send a lot of messages, this avoids that. 
 - Logging: Very basic interface to log stuff.
 
-Also, you can contact me:  [@zwwwdr](https://twitter.com/zwwwdr), [23@nigge.rs](mailto:23@nigge.rs) for whatever.
+Also, you can contact me:  [@zwwwdr](https://twitter.com/zwwwdr), [zwdr@cock.li](mailto:zwdr@cock.li) for whatever.
 
 ####Examples
 Using only the IRC-client functionality:
