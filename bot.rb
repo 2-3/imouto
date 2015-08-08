@@ -21,7 +21,7 @@ module Imouto
 			@loggers = [lambda {|msg| p msg}]
 			@matchers = Hash.new
 			@irc = irc
-			@reply_queue = Imouto::RatelimitedQueue.new(3)
+			@reply_queue = Imouto::RatelimitedQueue.new(3, 4)
 		end
 		
 		def start()
