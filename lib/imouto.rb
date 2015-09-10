@@ -6,7 +6,8 @@ module Imouto
 
 	Message = Struct.new(
 		:message,
-		:captures
+		:captures,
+		:raw
 	)
 	
 	class Bot
@@ -25,16 +26,17 @@ module Imouto
 		end
 		
 		def start()
-			read_thread = Thread.new do @irc.start.read {|msg, matchers = @matchers|
+			read_thread = Thread.new do @irc.start.read {|privmsg, matchers = @matchers|
 				matchers.each{|regex, matcher|
-					message = msg[:message]
+					message = privmsg[:message]
 					if message =~ regex then
 						log("[Executing Matcher] #{message}")
 						m = Message.new(
 							message,
-							regex.match(message)
+							regex.match(message),
+							privmsg
 						)
-						reply_to = msg[:target].start_with?('#') ? msg[:target] : msg[:nick]
+						reply_to = privmsg[:target].start_with?('#') ? privmsg[:target] : privmsg[:nick]
 						begin
 							reply = Thread.new{matcher.call(m)}.value
 						rescue StandardError => e
@@ -72,7 +74,7 @@ module Imouto
 		end
 		
 		def unregister_matcher(regex)
-			@matchers[regex].delete
+			@matchers.delete(regex)
 			log("[Removed Matcher] #{regex}")
 		end
 	end
