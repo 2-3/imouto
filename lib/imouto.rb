@@ -27,7 +27,7 @@ module Imouto
 		
 		def start()
 			read_thread = Thread.new do @irc.start.read {|privmsg, matchers = @matchers|
-				matchers.each{|regex, matcher|
+				matchers.keys.each{|regex|
 					message = privmsg[:message]
 					if message =~ regex then
 						log("[Executing Matcher] #{message}")
@@ -38,7 +38,7 @@ module Imouto
 						)
 						reply_to = privmsg[:target].start_with?('#') ? privmsg[:target] : privmsg[:nick]
 						begin
-							reply = Thread.new{matcher.call(m)}.value
+							reply = Thread.new{matchers[regex].call(m)}.value
 						rescue StandardError => e
 							log("[Matcher Exception] #{e}")
 							next
