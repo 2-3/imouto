@@ -10,13 +10,13 @@ module Imouto
     :raw
   )
   
-	ImoutoConfig = Struct.new(
+  ImoutoConfig = Struct.new(
     :loggers,
     :message_interval_size,
     :messages_per_interval
   )
 
-	
+  
   class Bot
 
     attr_reader :matchers, :irc, :reply_queue
@@ -24,14 +24,14 @@ module Imouto
     public
     
     def initialize(irc, conf)
-			imouto_config = ImoutoConfig.new()
+      imouto_config = ImoutoConfig.new()
       conf.each {|k, v| imouto_config[k] = v;}
-      @loggers = imouto_config.loggers || [lambda {|msg| p msg}]	
+      @loggers = imouto_config.loggers || [lambda {|msg| p msg}]  
       @matchers = Hash.new
       @irc = irc
       @reply_queue = Imouto::RatelimitedQueue.new(
-				imouto_config.messages_per_interval || 3,
-				imouto_config.message_interval_size || 4)
+        imouto_config.messages_per_interval || 3,
+        imouto_config.message_interval_size || 4)
     end
     
     def start()
