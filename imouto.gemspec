@@ -1,6 +1,6 @@
 Gem::Specification.new { |spec|
   spec.name         = "imouto"
-  spec.version      = "1.0.2"
+  spec.version      = "1.0.4"
   spec.date         = "2015-09-04"
   spec.summary      = "Basic IRC bot library, without frills"
   spec.description  = "A really basic & lightweight IRC-client-lib. Mix with a few lambdas for instant bot."

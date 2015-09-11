@@ -10,19 +10,28 @@ module Imouto
     :raw
   )
   
+	ImoutoConfig = Struct.new(
+    :loggers,
+    :message_interval_size,
+    :messages_per_interval
+  )
+
+	
   class Bot
 
-    attr_reader :matchers
-    attr_reader :irc
-    attr_reader :reply_queue
+    attr_reader :matchers, :irc, :reply_queue
     
     public
     
-    def initialize(irc)
-      @loggers = [lambda {|msg| p msg}]
+    def initialize(irc, conf)
+			imouto_config = ImoutoConfig.new()
+      conf.each {|k, v| imouto_config[k] = v;}
+      @loggers = imouto_config.loggers || [lambda {|msg| p msg}]	
       @matchers = Hash.new
       @irc = irc
-      @reply_queue = Imouto::RatelimitedQueue.new(3, 4)
+      @reply_queue = Imouto::RatelimitedQueue.new(
+				imouto_config.messages_per_interval || 3,
+				imouto_config.message_interval_size || 4)
     end
     
     def start()
@@ -44,13 +53,12 @@ module Imouto
               next
             end
             queue_reply(reply_to, reply)
-            log("[-> Queue] #{reply_to}: #{reply}")
           end
         }
       }
       end
       write_thread = Thread.new do @reply_queue.dequeue{|r, irc = @irc|
-        log("[<- Queue] #{r['target']}: #{r['reply']}")
+        log("[->] #{r['target']}: #{r['reply']}")
         @irc.privmsg(r['target'], r['reply'])
       }
       end

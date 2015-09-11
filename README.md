@@ -9,7 +9,7 @@ Following that spirit, it isn't a complete implementation of the RFCs. It's easy
 You can use only the IRC-client functionality and do whatever you like with the PRIVMSGs,
 or use the provided IRC-bot skeleton which provides:
 - Matchers: Execute λ for a given RegEx and reply with the result.
-- Rate Limiting: Most IRC-networks kick you if you send a lot of messages, this avoids that. 
+- Rate Limiting: Most IRC-networks kick you if you send a lot of messages in too short a time, this avoids that. 
 - Logging: Very basic interface to log stuff.
 
 ##Installation
@@ -60,9 +60,14 @@ Using Imouto with the included bot:
 		'realname' => 'John Titor',
 		'password' => elpsycongroo
 	}
+	config_imouto = {
+		'message_interval_size' => 4,
+		'messages_per_interval' => 3,
+		'loggers' => [lambda {|msg| p msg}, SomethingCallable]	
+	}
 	
 	con = Imouto::Irc.new(config_connection, config_user)
-	bot = Imouto::Bot.new(con)
+	bot = Imouto::Bot.new(con, config_imouto)
 	bot.register_matcher(/foo/, lambda {|msg| 'foo'})
 	bot.start()
 
