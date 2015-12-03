@@ -68,14 +68,16 @@ module Imouto
 
     # Yields PRIVMSGs and handles PINGs as well as setup operations
     def read
+      setup_complete = false
       until @socket.eof?
         msg = @socket.gets
         if msg.start_with? 'PING'
           raw "PONG #{msg[6..-1]}"
           next
         end
-        if (msg.include? '376') && (msg =~ /:(.*) 376 #{@user.nick} :(.*)$/)
+        if (!setup_complete) && (msg =~ /:(.*) 376 #{@user.nick} :(.*)$/)
           setup
+          setup_complete = true
           next
         end
         if  msg.include? 'PRIVMSG'
