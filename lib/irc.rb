@@ -18,17 +18,34 @@ module Imouto
     :password
   )
 
+  class Enum
+    attr_reader :options, :selected
+
+    def initialize(options, selected)
+      raise ArgumentError, "Expected argument options to respond to method 'at'" unless options.respond_to? 'at'
+      @options = options
+      @selected = options.first
+      set selected
+    end
+
+    def set(value)
+      return @selected unless @options.include? value
+      @selected = value
+    end
+  end
+
   class Irc
     include IrcCommands
 
-    attr_reader :connection
-    attr_reader :user
+    attr_reader :connection, :user, :connection_state
+
 
     def initialize(connection, user)
       @connection = Connection.new
       connection.each { |k, v| @connection[k] = v; }
       @user = User.new
       user.each { |k, v| @user[k] = v; }
+      @connection_state = Enum.new([:not_connected, :connecting, :connected, :failed], :not_connected)
       self
     end
 
@@ -54,37 +71,41 @@ module Imouto
           raw "USER #{@user.username} 0 * :#{@user.realname}"
         }
       rescue Timeout::Error
+        @connection_state.set(:failed)
         puts 'Timeout! Aborting.'
         return false
       rescue SocketError => e
+        @connection_state.set(:failed)
         puts "Network error: #{e}"
         return false
       rescue => e
+        @connection_state.set(:failed)
         puts "General exception: #{e}"
         return false
       end
+      @connection_state.set(:connecting)
       self
     end
 
     # Yields PRIVMSGs and handles PINGs as well as setup operations
     def read
-      setup_complete = false
       until @socket.eof?
         msg = @socket.gets
         if msg.start_with? 'PING'
           raw "PONG #{msg[6..-1]}"
           next
         end
-        if (!setup_complete) && (msg =~ /:(.*) 376 #{@user.nick} :(.*)$/)
-          setup
-          setup_complete = true
-          next
-        end
         if  msg.include? 'PRIVMSG'
           m = msg.chomp.match(/:(?<nick>.*)!(?<mask>.*) PRIVMSG (?<target>.*) :(?<message>.*)$/)
           yield m
         end
+        if (@connection_state.selected == :connecting) && (msg =~ /:(.*) 376 #{@user.nick} :(.*)$/)
+          setup
+          @connection_state.set(:connected)
+          next
+        end
       end
     end
+
   end
 end
