@@ -69,7 +69,8 @@ Using Imouto with the included bot:
 	con = Imouto::Irc.new(config_connection, config_user)
 	bot = Imouto::Bot.new(con, config_imouto)
 	bot.register_matcher(/foo (?<bar>.*)/, lambda {|msg|
-		return "Answering PRIVMSG from #{msg.raw[:nick]}!#{msg.raw[:mask]} to msg.raw[:target] (captures: #{msg.captures[:bar]}"
+		return "Answering PRIVMSG from #{msg.raw[:nick]}!#{msg.raw[:mask]}
+			to msg.raw[:target] (captures: #{msg.captures[:bar]}"
 	})
 	bot.start()
 
