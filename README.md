@@ -1,8 +1,8 @@
-## imouto
+# imouto
 A really basic &amp; lightweight IRC-client-lib. Mix with a few λs for instant bot.
 
 
-###Functionality
+## Functionality
 Imouto is intended to be a base for IRC-bots. It doesn't do anything breathtaking, but also won't get in your way.
 Following that spirit, it isn't a complete implementation of the RFCs. It's easy to add commands though.
 
@@ -12,11 +12,11 @@ or use the provided IRC-bot skeleton which provides:
 - Rate Limiting: Most IRC-networks kick you if you send a lot of messages in too short a time, this avoids that. 
 - Logging: Very basic interface to log stuff.
 
-##Installation
+## Installation
 Imouto is a ruby gem. If you don't know how to install ruby gems, you should probably google it.
 Because it's a cool thing and you should know.
 
-###Examples
+## Examples
 Using only the IRC-client functionality:
 
 	require "imouto"
